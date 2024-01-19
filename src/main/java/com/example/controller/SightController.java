@@ -35,9 +35,9 @@ public class SightController {
 
     //新增景點(#用postman newSight沒抓到)
     @PostMapping("/sights")
-    public ResponseEntity<Sight> createSight(@Valid @RequestBody SightRequest newSight){
+    public ResponseEntity<SightResponse> createSight(@Valid @RequestBody SightRequest newSight){
 
-        Sight sight= sightService.createSight(newSight);
+        SightResponse sight= sightService.createSight(newSight);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{sightName}").buildAndExpand(sight.getSightName()).toUri();
         //這段程式碼的目的是建立一個URI，用來指向新創建的產品
@@ -46,16 +46,16 @@ public class SightController {
 
     //查詢景點
     @GetMapping("/sights/{sightName}")
-    public ResponseEntity<Sight> getSight(@PathVariable("sightName") String name){
-        Sight sight = sightService.getSight(name);
+    public ResponseEntity<SightResponse> getSight(@PathVariable("sightName") String name){
+        SightResponse sight = sightService.getSight(name);
 
         return ResponseEntity.ok(sight);
     }
 
     //查詢區域所有景點
     @GetMapping("/sights") // /sights?keyword=七堵區
-    public ResponseEntity<List<Sight>> getSights(@ModelAttribute SightQueryParameter param){
-        List<Sight> sights = sightService.getSightsByZone(param);
+    public ResponseEntity<List<SightResponse>> getSights(@ModelAttribute SightQueryParameter param){
+        List<SightResponse> sights = sightService.getSightsByZone(param);
         return ResponseEntity.ok(sights);
     }
 

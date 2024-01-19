@@ -136,6 +136,7 @@ public class SightTest {
 
     }
 
+    //刪除sight測試
     @Test(expected = RuntimeException.class)
     public void testDeleteSight() throws Exception{
         Sight sight = createSight("sightName_deleteTest","zone_deleteTest","category_deleteTest","photoURL_deleteTest","description_deleteTest","address_deleteTest");

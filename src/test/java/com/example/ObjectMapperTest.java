@@ -1,6 +1,11 @@
 package com.example;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class ObjectMapperTest {
     private ObjectMapper mapper = new ObjectMapper();
@@ -10,6 +15,7 @@ public class ObjectMapperTest {
         private String name;
         private String address;
         private int area;
+        @JsonUnwrapped
         private ManageAgent manager;
 
         public String getId() {
@@ -55,7 +61,8 @@ public class ObjectMapperTest {
 
     private static class ManageAgent{
         private String agentName;
-        private String Manager;
+        @JsonProperty("managerName")
+        private String manager;
 
         public String getAgentName() {
             return agentName;
@@ -66,11 +73,42 @@ public class ObjectMapperTest {
         }
 
         public String getManager() {
-            return Manager;
+            return manager;
         }
 
         public void setManager(String manager) {
-            Manager = manager;
+            this.manager = manager;
         }
+    }
+
+    //Park 跟 ManageAgent都屬於 ObjectMapperTest的內部類別，需要宣告為static，否則 Jackson 無法進行反序列化
+    @Test
+    public void testSerializeParkToJSON() throws Exception{
+        Park park = new Park();
+        park.setId("P001");
+        park.setArea(521);
+        park.setName("Keelung Park");
+        park.setAddress("Xinyi Street");
+
+        String parkJSONStr = mapper.writeValueAsString(park);
+        JSONObject parkJSON = new JSONObject(parkJSONStr);
+
+        Assert.assertEquals(park.getId(),parkJSON.getString("id"));
+        Assert.assertEquals(park.getName(),parkJSON.getString("name"));
+        Assert.assertEquals(park.getArea(),parkJSON.getInt("area"));
+        Assert.assertEquals(park.getAddress(),parkJSON.getString("address"));
+    }
+
+    @Test
+    public void testDeserializeJSONToManageAgent() throws Exception{
+        JSONObject manageAgentJSON = new JSONObject()
+                .put("agentName","Keelung government")
+                .put("manager","陳威融");
+
+        String manageAgentJSONStr = manageAgentJSON.toString();
+        ManageAgent manageAgent = mapper.readValue(manageAgentJSONStr,ManageAgent.class);
+
+        Assert.assertEquals(manageAgentJSON.getString("agentName"),manageAgent.getAgentName());
+        Assert.assertEquals(manageAgentJSON.getString("manager"),manageAgent.getManager());
     }
 }
