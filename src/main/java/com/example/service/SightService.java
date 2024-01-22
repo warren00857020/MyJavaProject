@@ -13,10 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+
 public class SightService {
-    @Autowired
     private SightRepository repository;
+
+    public SightService(SightRepository repository){
+        this.repository = repository;
+    }
 
     //新增景點
     public SightResponse createSight(SightRequest newSight) {
