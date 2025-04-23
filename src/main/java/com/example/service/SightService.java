@@ -15,6 +15,7 @@ import java.util.Optional;
 
 
 public class SightService {
+    @Autowired
     private SightRepository repository;
 
     public SightService(SightRepository repository){

@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  my-java-app:
+    build: .
+    container_name: springboot-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/demo
+      - SPRING_PROFILES_ACTIVE=default
+      - LOGGING_LEVEL_ROOT=DEBUG
+  frontend:
+    build:
+      context: ../Tourism_Keelung_Frontend
+      dockerfile: Dockerfile
+    container_name: tourism-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - my-java-app
+volumes:
+  mongo-data:

@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.crawler.KeelungSightsCrawler;
 import com.example.entity.*;
 import com.example.parameter.SightQueryParameter;
 import com.example.service.SightService;
@@ -28,7 +29,7 @@ public class SightController {
         KeelungSightsCrawler crawler = new KeelungSightsCrawler();
         List<SightRequest> sights = crawler.getItems(Zone);
         for (SightRequest s: sights) {
-            createSight(s);
+            sightService.createSight(s);
         }
         return ResponseEntity.ok().body(sights);
     }
