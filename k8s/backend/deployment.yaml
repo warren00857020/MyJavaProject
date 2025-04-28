@@ -20,14 +20,14 @@ spec:
           image: weirung/spring:latest   # ← 換成你的映像 tag
           ports:
             - containerPort: 8080
-          env:
-            - name: SPRING_PROFILES_ACTIVE     # 如有需要
-              value: prod
-            - name: SPRING_DATA_MONGODB_URI    # 例：mongodb://mongo:27017/tourism
-              valueFrom:
-                secretKeyRef:
-                  name: mongo-uri-secret
-                  key: uri
+          # env:
+          #   - name: SPRING_PROFILES_ACTIVE     # 如有需要
+          #     value: prod
+          #   - name: SPRING_DATA_MONGODB_URI    # 例：mongodb://mongo:27017/tourism
+          #     valueFrom:
+          #       secretKeyRef:
+          #         name: mongo-uri-secret
+          #         key: uri
           resources:               # 視需求可調
             requests:
               cpu: "100m"
