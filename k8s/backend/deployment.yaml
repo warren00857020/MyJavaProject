@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: spring-app
-          image: weirung/myjavaproject:latest   # ← 換成你的映像 tag
+          image: weirung/spring:latest   # ← 換成你的映像 tag
           ports:
             - containerPort: 8080
           env:
