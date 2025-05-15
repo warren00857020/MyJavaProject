@@ -28,15 +28,23 @@ jobs:
           token_format: "access_token"
           workload_identity_provider: 'projects/344952852961/locations/global/workloadIdentityPools/github/providers/my-provider'
           service_account: 'github-ci@${{ env.PROJECT_ID }}.iam.gserviceaccount.com'
+      # 2) 安裝 gcloud CLI（以便執行 configure-docker）
+      - uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ env.PROJECT_ID }}
 
-      # 2) Docker build & push → Artifact Registry
+      # 3) 把 Access Token 寫進 Docker Credential Helper
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+      # 4) Docker build & push → Artifact Registry
       - uses: docker/build-push-action@v5
         with:
           context: .
           tags: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           push: true
 
-      # 3) Deploy 到 Cloud Run
+      # 5) Deploy 到 Cloud Run
       - uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: ${{ env.SERVICE_NAME }}
