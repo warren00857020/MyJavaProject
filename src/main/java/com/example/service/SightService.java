@@ -13,38 +13,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
+@Service
 public class SightService {
-    @Autowired
-    private SightRepository repository;
+    private final SightRepository repository;
 
-    public SightService(SightRepository repository){
+    @Autowired
+    public SightService(SightRepository repository) {
         this.repository = repository;
     }
 
-    //新增景點
+    /** 新增景點 */
     public SightResponse createSight(SightRequest newSight) {
         Sight sight = SightConverter.toSight(newSight);
-        return SightConverter.toSightResponse(repository.insert(sight));
+        Sight saved = repository.save(sight);          // ← save 取代 insert
+        return SightConverter.toSightResponse(saved);
     }
 
     public SightResponse getSight(String name) {
-        return SightConverter.toSightResponse(repository.findBySightName(name));
+        return SightConverter.toSightResponse(
+                repository.findBySightName(name));
     }
 
     public void deleteSight(String name) {
-        SightResponse sight = getSight(name);
-        repository.deleteBySightName(sight.getSightName());
+        repository.deleteBySightName(name);            // 直接呼叫 repo
     }
 
-    public List<SightResponse> getSightsByZone(SightQueryParameter param){
+    public List<SightResponse> getSightsByZone(SightQueryParameter param) {
         String keyword = Optional.ofNullable(param.getKeyword()).orElse("");
-        List<Sight> sights= repository.findByZone(keyword);
-        List<SightResponse> sightResponses = new ArrayList<>();
-        for (Sight s: sights) {
-            sightResponses.add(SightConverter.toSightResponse(s));
-        }
-        return sightResponses;
+        return repository.findByZone(keyword).stream()
+                .map(SightConverter::toSightResponse)
+                .toList();
     }
 
 }
