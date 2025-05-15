@@ -24,10 +24,10 @@ public class SightController {
     private SightService sightService;
 
     //爬蟲進DB
-    @GetMapping("/setSights")//
-    public ResponseEntity<List<SightRequest>> putSights(@RequestParam String zone) throws IOException {
+    @GetMapping("/setSights/{Zone}")//
+    public ResponseEntity<List<SightRequest>> putSights(@PathVariable("Zone") String Zone) throws IOException {
         KeelungSightsCrawler crawler = new KeelungSightsCrawler();
-        List<SightRequest> sights = crawler.getItems(zone);
+        List<SightRequest> sights = crawler.getItems(Zone);
         for (SightRequest s: sights) {
             sightService.createSight(s);
         }
