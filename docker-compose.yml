@@ -1,12 +1,16 @@
 version: '3.8'
 services:
-  mongo:
-    image: mongo:6.0
-    container_name: mongo
+  postgres:
+    image: postgres:16
+    container_name: pg-local
     ports:
-      - "27017:27017"
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydb
     volumes:
-      - mongo-data:/data/db
+      - pg-data:/var/lib/postgresql/data
 
   my-java-app:
     build: .
@@ -14,11 +18,13 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mongo
+      - postgres
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/demo
-      - SPRING_PROFILES_ACTIVE=default
-      - LOGGING_LEVEL_ROOT=DEBUG
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update   # 開發生成表用
+      SPRING_PROFILES_ACTIVE: local           # 自訂 local profile
   frontend:
     build:
       context: ../Tourism_Keelung_Frontend
@@ -29,4 +35,4 @@ services:
     depends_on:
       - my-java-app
 volumes:
-  mongo-data:
+  pg-data:
