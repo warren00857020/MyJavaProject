@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 @SpringBootApplication
-public class MyJavaProjectApplication {
+public class
+MyJavaProjectApplication {
 
     public MyJavaProjectApplication() {
 
