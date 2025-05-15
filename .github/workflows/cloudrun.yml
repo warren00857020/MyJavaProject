@@ -1,34 +1,50 @@
 name: Build & Deploy to Cloud Run
+
 on:
   push:
     branches: [ main ]
+
+# 建議把常用字串抽到 env，後面就不用一直重複寫
+env:
+  PROJECT_ID: nth-fiber-459808-b5          # ✅ 你的 GCP 專案 ID
+  REGION: asia-east1                       # ✅ Cloud Run 與 Artifact Registry 的區域
+  REPO_NAME: my-repo                       # ✅ Artifact Registry 倉庫
+  SERVICE_NAME: myapp                      # ✅ Cloud Run 服務
+  IMAGE: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write   # 讓 Workload Identity Federation 能用
+      id-token: write
       contents: read
+
     steps:
       - uses: actions/checkout@v4
 
-      # 1) 透過 OIDC 與 GCP 連線
-      - id: 'auth'
+      # 1) OIDC → 交換成 github-ci@ 的存取權
+      - id: auth
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: 'projects/123456/locations/global/workloadIdentityPools/github/providers/my-provider'
-          service_account: 'github-ci@PROJECT_ID.iam.gserviceaccount.com'
+          token_format: "access_token"
+          # ⚠️ 把 123456 換成實際「專案號碼」(projectNumber)，可用
+          #     gcloud projects describe $PROJECT_ID --format='value(projectNumber)'
+          workload_identity_provider: 'projects/344952852961/locations/global/workloadIdentityPools/github/providers/my-provider'
+          service_account: 'github-ci@${{ env.PROJECT_ID }}.iam.gserviceaccount.com'
 
-      # 2) Build & Push
+      # 2) Docker build & push → Artifact Registry
       - uses: docker/build-push-action@v5
         with:
           context: .
-          tags: asia-east1-docker.pkg.dev/PROJECT_ID/my-repo/myapp:${{ github.sha }}
+          tags: ${{ env.IMAGE }}:${{ github.sha }}
           push: true
 
-      # 3) Deploy
+      # 3) Deploy 到 Cloud Run
       - uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: myapp
-          image: asia-east1-docker.pkg.dev/PROJECT_ID/my-repo/myapp:${{ github.sha }}
-          region: asia-east1
+          service: ${{ env.SERVICE_NAME }}
+          image: ${{ env.IMAGE }}:${{ github.sha }}
+          region: ${{ env.REGION }}
+          # ↓ 如果你的服務需要 Cloud SQL、環境變數，可加到 flags/env_vars
+          # flags: --allow-unauthenticated --add-cloudsql-instances=nth-fiber-459808-b5:asia-east1:mypg
+          # env_vars: DB_PASSWORD=warren0702
