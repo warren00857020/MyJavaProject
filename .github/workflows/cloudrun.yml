@@ -10,7 +10,6 @@ env:
   REGION: asia-east1                       # ✅ Cloud Run 與 Artifact Registry 的區域
   REPO_NAME: my-repo                       # ✅ Artifact Registry 倉庫
   SERVICE_NAME: myapp                      # ✅ Cloud Run 服務
-  IMAGE: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}
 
 jobs:
   deploy:
@@ -27,8 +26,6 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           token_format: "access_token"
-          # ⚠️ 把 123456 換成實際「專案號碼」(projectNumber)，可用
-          #     gcloud projects describe $PROJECT_ID --format='value(projectNumber)'
           workload_identity_provider: 'projects/344952852961/locations/global/workloadIdentityPools/github/providers/my-provider'
           service_account: 'github-ci@${{ env.PROJECT_ID }}.iam.gserviceaccount.com'
 
@@ -36,14 +33,14 @@ jobs:
       - uses: docker/build-push-action@v5
         with:
           context: .
-          tags: ${{ env.IMAGE }}:${{ github.sha }}
+          tags: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           push: true
 
       # 3) Deploy 到 Cloud Run
       - uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: ${{ env.SERVICE_NAME }}
-          image: ${{ env.IMAGE }}:${{ github.sha }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           region: ${{ env.REGION }}
           # ↓ 如果你的服務需要 Cloud SQL、環境變數，可加到 flags/env_vars
           # flags: --allow-unauthenticated --add-cloudsql-instances=nth-fiber-459808-b5:asia-east1:mypg
