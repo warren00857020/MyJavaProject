@@ -74,6 +74,20 @@
 			<version>6.0</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- Spring Data JPA / JDBC 看需求擇一 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<!-- Cloud SQL Java Connector (自動處理 IAM + TLS) -->
+		<dependency>
+			<groupId>com.google.cloud.sql</groupId>
+			<artifactId>postgres-socket-factory</artifactId>
+			<version>1.17.0</version>
+		</dependency>
+
 <!--		<dependency>-->
 <!--			<groupId>org.springframework</groupId>-->
 <!--			<artifactId>spring-web</artifactId>-->
