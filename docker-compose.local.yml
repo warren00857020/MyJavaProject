@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # 你的應用程式
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+    # 如果需要連接資料庫，取消註解：
+    # depends_on:
+    #   - db
+    networks:
+      - app-network
+
+  # 如果需要本地資料庫，取消註解：
+  # db:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: mydb
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+# volumes:
+#   postgres-data:
