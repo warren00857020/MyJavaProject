@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   postgres:
-    image: postgres:16
+    image: postgres:16-alpine
     container_name: pg-local
     ports:
       - "5432:5432"
@@ -11,6 +11,12 @@ services:
       POSTGRES_DB: mydb
     volumes:
       - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   my-java-app:
     build: .
@@ -18,13 +24,15 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_JPA_HIBERNATE_DDL_AUTO: update   # 開發生成表用
       SPRING_PROFILES_ACTIVE: local           # 自訂 local profile
+    restart: unless-stopped
   frontend:
     build:
       context: ../Tourism_Keelung_Frontend
