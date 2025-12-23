@@ -1,34 +1,45 @@
-# Taiwan.net.tw 爬蟲系統設計
+# TravelKing.com.tw 爬蟲系統設計
 
 ## 目標網站分析
 
-### Taiwan.net.tw 結構
-- 主網站：https://www.taiwan.net.tw/
-- 景點列表：https://www.taiwan.net.tw/m1.aspx?sNo=0001000
-- 美食列表：https://www.taiwan.net.tw/m1.aspx?sNo=0002000
-- 活動節慶：https://www.taiwan.net.tw/m1.aspx?sNo=0004000
+### TravelKing.com.tw 結構
+- 主網站：https://www.travelking.com.tw/
+- 旅遊導覽首頁：https://www.travelking.com.tw/tourguide/taiwan/
+- 縣市景點列表：https://www.travelking.com.tw/tourguide/{county}/{city}/
+  - 例：台北市 https://www.travelking.com.tw/tourguide/taipei/taipei-city/
+- 景點詳細頁：https://www.travelking.com.tw/tourguide/{county}/scenery{id}.html
+  - 例：八卦山 https://www.travelking.com.tw/tourguide/scenery1.html
+
+### 網站特點
+- **雙層結構**：縣市 → 行政區 → 景點列表
+- **無分頁機制**：單頁完整展示所有景點
+- **行政區分類**：每個縣市按行政區（如台北市12區）組織景點
+- **詳細頁資訊豐富**：包含地址、經緯度、營業時間、照片、人氣指數等
 
 ## 爬蟲架構設計
 
 ### 1. 通用爬蟲基類
 
 ```java
-public abstract class BaseTaiwanCrawler<T> {
-    protected final RestTemplate restTemplate;
-    protected final String baseUrl;
-    protected final int retryLimit;
-    protected final long delayMs;
+public abstract class BaseTravelKingCrawler<T> {
+    protected final String baseUrl = "https://www.travelking.com.tw";
+    protected final int retryLimit = 3;
+    protected final long minDelayMs = 1000;  // 最小延遲 1 秒
+    protected final long maxDelayMs = 3000;  // 最大延遲 3 秒
 
     // 抽象方法
-    protected abstract String getListUrl(String regionCode);
-    protected abstract T parseItem(Element element);
+    protected abstract String getListUrl(String county, String city);
+    protected abstract T parseDetailPage(Document doc, String url);
     protected abstract void saveItem(T item);
 
     // 通用方法
-    public List<T> crawlByRegion(String regionCode);
+    public List<T> crawlByCity(String county, String city);
+    public List<T> crawlByCounty(String county);
     public List<T> crawlAll();
     protected Document fetchDocument(String url);
-    protected void delay();
+    protected List<String> extractDetailLinks(Document listDoc);
+    protected void randomDelay();
+    protected String getRandomUserAgent();
 }
 ```
 
@@ -37,71 +48,77 @@ public abstract class BaseTaiwanCrawler<T> {
 #### SightCrawler (景點爬蟲)
 ```java
 @Component
-public class TaiwanSightCrawler extends BaseTaiwanCrawler<Sight> {
+public class TravelKingSightCrawler extends BaseTravelKingCrawler<Sight> {
 
     @Override
-    protected String getListUrl(String regionCode) {
-        return baseUrl + "/m1.aspx?sNo=0001000&c=" + regionCode;
+    protected String getListUrl(String county, String city) {
+        // 例：taipei/taipei-city/
+        return baseUrl + "/tourguide/" + county + "/" + city + "/";
     }
 
     @Override
-    protected Sight parseItem(Element element) {
-        // 解析景點資訊
-        // - 名稱、地址、描述
-        // - 照片 URLs
-        // - 座標（如果有）
-        // - 分類、標籤
+    protected Sight parseDetailPage(Document doc, String url) {
+        Sight sight = new Sight();
+
+        // 1. 景點名稱 (從 <h1> 標籤)
+        sight.setSightName(doc.select("h1").first().text());
+
+        // 2. 基本資訊 (從 #point_data 區塊)
+        Element pointData = doc.select("#point_data").first();
+        sight.setAddress(pointData.select("地址").text());
+        sight.setCategory(pointData.select("景點類別").text());
+
+        // 3. 景點描述 (多段落文字)
+        String description = doc.select(".description").text();
+        sight.setDescription(description);
+
+        // 4. 照片 URLs (從 Swiper 輪播)
+        String[] photoUrls = doc.select(".swiper-slide img")
+            .stream()
+            .map(img -> img.attr("src"))
+            .toArray(String[]::new);
+        sight.setPhotoUrls(photoUrls);
+
+        // 5. 營業時間
+        String openingHours = doc.select(".business-hours").text();
+        sight.setOpeningHours(openingHours);
+
+        // 6. 經緯度 (從 Google Maps 連結解析)
+        String mapLink = doc.select("a[href*=google.com/maps]").attr("href");
+        parseLatLng(mapLink, sight);
+
+        // 7. 人氣指數
+        String popularity = doc.select(".popularity").text();
+        sight.setViewCount(Integer.parseInt(popularity));
+
+        return sight;
     }
 
-    public Sight crawlDetail(String sightUrl) {
-        // 爬取景點詳細頁面
-        // - 完整描述
-        // - 營業時間
-        // - 票價資訊
-        // - 聯絡資訊
+    private void parseLatLng(String mapLink, Sight sight) {
+        // 從 URL 解析經緯度：24.0770862685263,120.549057732064
+        Pattern pattern = Pattern.compile("(\\d+\\.\\d+),(\\d+\\.\\d+)");
+        Matcher matcher = pattern.matcher(mapLink);
+        if (matcher.find()) {
+            sight.setLatitude(new BigDecimal(matcher.group(1)));
+            sight.setLongitude(new BigDecimal(matcher.group(2)));
+        }
     }
 }
 ```
 
-#### FoodCrawler (美食爬蟲)
+#### 縣市城市映射表
 ```java
 @Component
-public class TaiwanFoodCrawler extends BaseTaiwanCrawler<Food> {
-
-    @Override
-    protected String getListUrl(String regionCode) {
-        return baseUrl + "/m1.aspx?sNo=0002000&c=" + regionCode;
-    }
-
-    @Override
-    protected Food parseItem(Element element) {
-        // 解析美食資訊
-        // - 餐廳/小吃名稱
-        // - 地址、電話
-        // - 菜系類型
-        // - 招牌菜
-    }
-}
-```
-
-#### FestivalCrawler (節慶爬蟲)
-```java
-@Component
-public class TaiwanFestivalCrawler extends BaseTaiwanCrawler<Festival> {
-
-    @Override
-    protected String getListUrl(String regionCode) {
-        return baseUrl + "/m1.aspx?sNo=0004000&c=" + regionCode;
-    }
-
-    @Override
-    protected Festival parseItem(Element element) {
-        // 解析節慶資訊
-        // - 節慶名稱
-        // - 舉辦時間、地點
-        // - 活動描述
-        // - 是否週期性
-    }
+public class CityMappingConfig {
+    // TravelKing 使用的縣市/城市 URL slug
+    public static final Map<String, List<String>> COUNTY_CITY_MAP = Map.ofEntries(
+        Map.entry("taipei", List.of("taipei-city")),  // 台北市
+        Map.entry("newtaipei", List.of("...各區...")), // 新北市（需要根據實際網站確認）
+        Map.entry("taichung", List.of("...")),        // 台中市
+        Map.entry("tainan", List.of("...")),          // 台南市
+        Map.entry("kaohsiung", List.of("...")),       // 高雄市
+        // ... 其他縣市
+    );
 }
 ```
 
