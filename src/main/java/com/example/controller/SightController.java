@@ -35,6 +35,9 @@ public class SightController {
     private TravelKingSightCrawler crawler;
 
     @Autowired
+    private com.example.crawler.TdxScenicSpotCrawler tdxCrawler;
+
+    @Autowired
     private CrawlerService crawlerService;
 
     /* ========== 爬蟲相關 API ========== */
@@ -319,6 +322,150 @@ public class SightController {
         }
 
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 使用 TDX API 爬取指定城市的景點
+     * POST /sights/crawler/tdx?city=Taipei&top=30
+     *
+     * @param city 城市代碼（例如：Taipei, NewTaipei, Taichung）
+     * @param top 限制返回筆數（可選，預設不限制）
+     * @param clientId TDX API Client ID（必須在環境變數或請求參數中提供）
+     * @param clientSecret TDX API Client Secret（必須在環境變數或請求參數中提供）
+     */
+    @PostMapping("/sights/crawler/tdx")
+    public ResponseEntity<Map<String, Object>> crawlTdxSights(
+            @RequestParam String city,
+            @RequestParam(required = false) Integer top,
+            @RequestParam(required = false) String clientId,
+            @RequestParam(required = false) String clientSecret) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // 設定 TDX API 認證資訊（優先使用請求參數，否則使用環境變數）
+            String finalClientId = clientId != null ? clientId : System.getenv("TDX_CLIENT_ID");
+            String finalClientSecret = clientSecret != null ? clientSecret : System.getenv("TDX_CLIENT_SECRET");
+
+            if (finalClientId == null || finalClientSecret == null) {
+                response.put("success", false);
+                response.put("message", "請提供 TDX API 認證資訊（clientId 和 clientSecret）");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            tdxCrawler.setCredentials(finalClientId, finalClientSecret);
+
+            // 爬取景點
+            List<Sight> sights = tdxCrawler.crawlScenicSpots(city, top);
+
+            // 儲存到資料庫
+            List<Sight> savedSights = new ArrayList<>();
+            for (Sight sight : sights) {
+                try {
+                    Sight saved = sightService.createSightEntity(sight);
+                    savedSights.add(saved);
+                } catch (Exception e) {
+                    System.err.println("儲存景點失敗：" + sight.getSightName() + " - " + e.getMessage());
+                }
+            }
+
+            response.put("success", true);
+            response.put("message", "成功爬取 TDX 景點");
+            response.put("city", city);
+            response.put("crawledCount", sights.size());
+            response.put("savedCount", savedSights.size());
+            response.put("sights", savedSights);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", "爬取失敗: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    /**
+     * 使用 TDX API 爬取所有支援的城市
+     * POST /sights/crawler/tdx/all?top=30
+     */
+    @PostMapping("/sights/crawler/tdx/all")
+    public ResponseEntity<Map<String, Object>> crawlAllTdxSights(
+            @RequestParam(required = false) Integer top,
+            @RequestParam(required = false) String clientId,
+            @RequestParam(required = false) String clientSecret) {
+
+        Map<String, Object> response = new HashMap<>();
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        try {
+            // 設定 TDX API 認證資訊
+            String finalClientId = clientId != null ? clientId : System.getenv("TDX_CLIENT_ID");
+            String finalClientSecret = clientSecret != null ? clientSecret : System.getenv("TDX_CLIENT_SECRET");
+
+            if (finalClientId == null || finalClientSecret == null) {
+                response.put("success", false);
+                response.put("message", "請提供 TDX API 認證資訊");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            tdxCrawler.setCredentials(finalClientId, finalClientSecret);
+
+            int totalCrawled = 0;
+            int totalSaved = 0;
+
+            // 爬取所有支援的城市
+            for (String city : com.example.crawler.TdxScenicSpotCrawler.SUPPORTED_CITIES) {
+                Map<String, Object> cityResult = new HashMap<>();
+                cityResult.put("city", city);
+
+                try {
+                    List<Sight> sights = tdxCrawler.crawlScenicSpots(city, top);
+
+                    // 儲存到資料庫
+                    int savedCount = 0;
+                    for (Sight sight : sights) {
+                        try {
+                            sightService.createSightEntity(sight);
+                            savedCount++;
+                        } catch (Exception e) {
+                            System.err.println("儲存景點失敗：" + sight.getSightName());
+                        }
+                    }
+
+                    totalCrawled += sights.size();
+                    totalSaved += savedCount;
+
+                    cityResult.put("success", true);
+                    cityResult.put("crawledCount", sights.size());
+                    cityResult.put("savedCount", savedCount);
+
+                } catch (Exception e) {
+                    cityResult.put("success", false);
+                    cityResult.put("error", e.getMessage());
+                }
+
+                results.add(cityResult);
+
+                // 避免請求過於頻繁
+                Thread.sleep(1000);
+            }
+
+            response.put("success", true);
+            response.put("message", "完成爬取所有城市");
+            response.put("totalCities", com.example.crawler.TdxScenicSpotCrawler.SUPPORTED_CITIES.length);
+            response.put("totalCrawled", totalCrawled);
+            response.put("totalSaved", totalSaved);
+            response.put("results", results);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", "爬取失敗: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
     }
 
     /**
