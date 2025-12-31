@@ -54,10 +54,12 @@ Thumbs.db
 *.swo
 *~
 
-# Done tracking
+# Done tracking (動態生成的檔案，不需要包含)
 src/main/resources/done.txt
-src/main/resources/urls.json.txt
-src/main/resources/taipei-sights-urls.json
+
+# URL 列表檔案需要保留，用於爬蟲
+# src/main/resources/urls.json.txt
+# src/main/resources/taipei-sights-urls.json
 
 # Misc
 nul
