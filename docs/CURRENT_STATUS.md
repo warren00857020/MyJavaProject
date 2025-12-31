@@ -322,8 +322,7 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/travel_db
 spring.datasource.username=postgres
 spring.datasource.password=postgres123
 
-# Google Places API
-google.places.api.key=AIzaSyCJTzMWkfxhnUx3haP0qjULGbTVAm5GDuQ
+
 ```
 
 ### MCP Server (`.mcp.json`)
