@@ -28,7 +28,9 @@
       "Bash(powershell -Command \"\\(Invoke-RestMethod -Uri ''http://localhost:8080/festivals''\\).Count\")",
       "Bash(powershell -Command \"docker exec postgres psql -U myuser -d mydb -c \"\"\\\\d sights\"\" 2>&1 | Select-String -Pattern ''character varying''\")",
       "Bash(docker ps:*)",
-      "Bash(echo \"# 資料庫設定（本地開發環境）\nDB_URL=jdbc:postgresql://localhost:5432/mydb\nDB_USERNAME=postgres\nDB_PASSWORD=postgres\n\n# Google Places API\nGOOGLE_PLACES_API_KEY=AIzaSyCJTzMWkfxhnUx3haP0qjULGbTVAm5GDuQ\")"
+      "Bash(echo \"# 資料庫設定（本地開發環境）\nDB_URL=jdbc:postgresql://localhost:5432/mydb\nDB_USERNAME=postgres\nDB_PASSWORD=postgres\n\n# Google Places API\nGOOGLE_PLACES_API_KEY=AIzaSyCJTzMWkfxhnUx3haP0qjULGbTVAm5GDuQ\")",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   },
   "enabledMcpjsonServers": [
