@@ -40,14 +40,13 @@ class SightConverterTest {
     @DisplayName("Sight 轉換為 SightResponse")
     void toSightResponse_Success() {
         // Given
-        Sight sight = new Sight(
-            "和平島公園",
-            "中正區",
-            "風景區",
-            "http://example.com/photo.jpg",
-            "美麗的海岸風景",
-            "基隆市中正區平一路360號"
-        );
+        Sight sight = new Sight();
+        sight.setSightName("和平島公園");
+        sight.setZone("中正區");
+        sight.setCategory("風景區");
+        sight.setPhotoURL("http://example.com/photo.jpg");
+        sight.setDescription("美麗的海岸風景");
+        sight.setAddress("基隆市中正區平一路360號");
         sight.setId(1L);
 
         // When

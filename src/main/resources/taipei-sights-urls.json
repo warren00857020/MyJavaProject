@@ -1,0 +1,77 @@
+{
+  "city": "台北市",
+  "cityCode": "TPE",
+  "regions": {
+    "中正區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery104238.html",
+        "https://www.travelking.com.tw/tourguide/scenery104530.html",
+        "https://www.travelking.com.tw/tourguide/scenery458.html"
+      ]
+    },
+    "大同區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery104535.html",
+        "https://www.travelking.com.tw/tourguide/scenery104533.html"
+      ]
+    },
+    "中山區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery104534.html",
+        "https://www.travelking.com.tw/tourguide/scenery105465.html"
+      ]
+    },
+    "松山區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery103004.html"
+      ]
+    },
+    "大安區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery105419.html"
+      ]
+    },
+    "萬華區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery102205.html"
+      ]
+    },
+    "信義區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery102538.html",
+        "https://www.travelking.com.tw/tourguide/scenery456.html"
+      ]
+    },
+    "士林區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery439.html",
+        "https://www.travelking.com.tw/tourguide/scenery105153.html"
+      ]
+    },
+    "北投區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery105503.html"
+      ]
+    },
+    "內湖區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery475.html"
+      ]
+    },
+    "南港區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery474.html"
+      ]
+    },
+    "文山區": {
+      "urls": [
+        "https://www.travelking.com.tw/tourguide/scenery473.html"
+      ]
+    }
+  },
+  "metadata": {
+    "lastUpdated": "2025-12-26",
+    "totalUrls": 17,
+    "note": "這是台北市景點 URL 的區域化配置檔案，爬蟲會根據此檔案按區域爬取景點"
+  }
+}

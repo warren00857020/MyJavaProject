@@ -1,7 +1,64 @@
-target/
-.git/
-.idea/
+# Git
+.git
+.gitignore
+.gitattributes
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# IDE
+.idea
+.vscode
+.eclipse
 *.iml
-.DS_Store
+*.iws
+*.ipr
+
+# Build artifacts
+target/
+build/
+*.jar
+*.war
+
+# Dependencies
+node_modules/
+mcp-server/node_modules/
+mcp-server/dist/
+
+# Environment & Config
 .env
+.env.local
+.env.production
+.secrets
+.claude/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Testing
+src/test/
 *.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Done tracking
+src/main/resources/done.txt
+src/main/resources/urls.json.txt
+src/main/resources/taipei-sights-urls.json
+
+# Misc
+nul
+TestCrawler.java

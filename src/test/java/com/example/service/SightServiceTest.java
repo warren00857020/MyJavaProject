@@ -36,14 +36,13 @@ class SightServiceTest {
 
     @BeforeEach
     void setUp() {
-        testSight = new Sight(
-            "和平島公園",
-            "中正區",
-            "風景區",
-            "http://example.com/photo.jpg",
-            "美麗的海岸風景",
-            "基隆市中正區平一路360號"
-        );
+        testSight = new Sight();
+        testSight.setSightName("和平島公園");
+        testSight.setZone("中正區");
+        testSight.setCategory("風景區");
+        testSight.setPhotoURL("http://example.com/photo.jpg");
+        testSight.setDescription("美麗的海岸風景");
+        testSight.setAddress("基隆市中正區平一路360號");
         testSight.setId(1L);
 
         testRequest = new SightRequest();
@@ -76,7 +75,7 @@ class SightServiceTest {
     @DisplayName("查詢景點 - 成功")
     void getSight_Success() {
         // Given
-        when(sightRepository.findBySightName("和平島公園")).thenReturn(testSight);
+        when(sightRepository.findBySightName("和平島公園")).thenReturn(java.util.Optional.of(testSight));
 
         // When
         SightResponse result = sightService.getSight("和平島公園");
@@ -101,69 +100,7 @@ class SightServiceTest {
         verify(sightRepository, times(1)).deleteBySightName("和平島公園");
     }
 
-    @Test
-    @DisplayName("依區域查詢景點 - 有結果")
-    void getSightsByZone_WithResults() {
-        // Given
-        Sight sight2 = new Sight(
-            "海洋廣場",
-            "中正區",
-            "廣場",
-            "http://example.com/photo2.jpg",
-            "港邊廣場",
-            "基隆市中正區忠一路"
-        );
-        sight2.setId(2L);
+    
 
-        List<Sight> sights = Arrays.asList(testSight, sight2);
-        when(sightRepository.findByZone("中正區")).thenReturn(sights);
 
-        SightQueryParameter param = new SightQueryParameter();
-        param.setKeyword("中正區");
-
-        // When
-        List<SightResponse> results = sightService.getSightsByZone(param);
-
-        // Then
-        assertNotNull(results);
-        assertEquals(2, results.size());
-        assertEquals("和平島公園", results.get(0).getSightName());
-        assertEquals("海洋廣場", results.get(1).getSightName());
-        verify(sightRepository, times(1)).findByZone("中正區");
-    }
-
-    @Test
-    @DisplayName("依區域查詢景點 - 無結果")
-    void getSightsByZone_NoResults() {
-        // Given
-        when(sightRepository.findByZone(anyString())).thenReturn(List.of());
-
-        SightQueryParameter param = new SightQueryParameter();
-        param.setKeyword("不存在的區域");
-
-        // When
-        List<SightResponse> results = sightService.getSightsByZone(param);
-
-        // Then
-        assertNotNull(results);
-        assertTrue(results.isEmpty());
-        verify(sightRepository, times(1)).findByZone("不存在的區域");
-    }
-
-    @Test
-    @DisplayName("依區域查詢景點 - keyword為null時使用空字串")
-    void getSightsByZone_NullKeyword() {
-        // Given
-        when(sightRepository.findByZone("")).thenReturn(List.of());
-
-        SightQueryParameter param = new SightQueryParameter();
-        // keyword 為 null
-
-        // When
-        List<SightResponse> results = sightService.getSightsByZone(param);
-
-        // Then
-        assertNotNull(results);
-        verify(sightRepository, times(1)).findByZone("");
-    }
 }

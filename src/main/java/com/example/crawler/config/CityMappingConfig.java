@@ -17,28 +17,28 @@ public class CityMappingConfig {
      * 格式：資料庫 region code -> TravelKing URL county slug
      */
     public static final Map<String, String> REGION_TO_COUNTY_MAP = Map.ofEntries(
-        Map.entry("TPE", "taipei"),           // 台北市
-        Map.entry("TPH", "newtaipei"),        // 新北市
-        Map.entry("TAO", "taoyuan"),          // 桃園市
-        Map.entry("TXG", "taichung"),         // 台中市
-        Map.entry("TNN", "tainan"),           // 台南市
-        Map.entry("KHH", "kaohsiung"),        // 高雄市
-        Map.entry("KEL", "keelung"),          // 基隆市
-        Map.entry("HSZ", "hsinchu"),          // 新竹市
-        Map.entry("CYI", "chiayi-city"),      // 嘉義市
-        Map.entry("HSQ", "hsinchu-county"),   // 新竹縣
-        Map.entry("MIA", "miaoli"),           // 苗栗縣
-        Map.entry("CHA", "changhua"),         // 彰化縣
-        Map.entry("NAN", "nantou"),           // 南投縣
-        Map.entry("YUN", "yunlin"),           // 雲林縣
-        Map.entry("CYQ", "chiayi-county"),    // 嘉義縣
-        Map.entry("PIF", "pingtung"),         // 屏東縣
-        Map.entry("ILA", "yilan"),            // 宜蘭縣
-        Map.entry("HUA", "hualien"),          // 花蓮縣
-        Map.entry("TTT", "taitung"),          // 台東縣
-        Map.entry("PEN", "penghu"),           // 澎湖縣
-        Map.entry("KIN", "kinmen"),           // 金門縣
-        Map.entry("LIE", "lienchiang")        // 連江縣（馬祖）
+        Map.entry("TPE", "taipei-city"),           // 台北市
+        Map.entry("TPH", "newtaipei-city"),        // 新北市
+        Map.entry("TAO", "taoyuan-city"),          // 桃園市
+        Map.entry("TXG", "taichung-city"),         // 台中市
+        Map.entry("TNN", "tainan-city"),           // 台南市
+        Map.entry("KHH", "kaohsiung-city"),        // 高雄市
+        Map.entry("KEL", "keelungcity"),          // 基隆市
+        Map.entry("HSZ", "hsinchucity"),          // 新竹市
+        Map.entry("CYI", "chiayicity"),      // 嘉義市
+        Map.entry("HSQ", "hsinchucounty"),   // 新竹縣
+        Map.entry("MIA", "miaolicounty"),           // 苗栗縣
+        Map.entry("CHA", "changhuacounty"),         // 彰化縣
+        Map.entry("NAN", "nantoucounty"),           // 南投縣
+        Map.entry("YUN", "yunlincounty"),           // 雲林縣
+        Map.entry("CYQ", "chiayicounty"),    // 嘉義縣
+        Map.entry("PIF", "pingtungcounty"),         // 屏東縣
+        Map.entry("ILA", "yilancounty"),            // 宜蘭縣
+        Map.entry("HUA", "hualiencounty"),          // 花蓮縣
+        Map.entry("TTT", "taitungcounty"),          // 台東縣
+        Map.entry("PEN", "penghucounty"),           // 澎湖縣
+        Map.entry("KIN", "kinmencounty"),           // 金門縣
+        Map.entry("LIE", "lienchiangcounty")        // 連江縣（馬祖）
     );
 
     /**

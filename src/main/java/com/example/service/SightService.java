@@ -80,21 +80,56 @@ public class SightService {
         return repository.findByRegionIdAndCategory(regionId, category);
     }
 
+
     /**
-     * 根據行政區查詢（使用 Query Parameter）
+     * 根據行政區名稱查詢（例如：中正區）
      */
-    public List<SightResponse> getSightsByZone(SightQueryParameter param) {
-        String keyword = Optional.ofNullable(param.getKeyword()).orElse("");
-        return repository.findByZone(keyword).stream()
+    public List<SightResponse> getSightsByZoneName(String zone) {
+        return repository.findByZone(zone).stream()
                 .map(SightConverter::toSightResponse)
                 .toList();
     }
 
     /**
-     * 關鍵字搜尋景點
+     * 根據城市名稱查詢（例如：台北市）
+     * 使用地址模糊搜尋
+     */
+    public List<SightResponse> getSightsByCity(String city) {
+        return repository.findByCity(city).stream()
+                .map(SightConverter::toSightResponse)
+                .toList();
+    }
+
+    /**
+     * 關鍵字搜尋景點（只搜尋景點名稱）
      */
     public List<Sight> searchSights(String keyword) {
         return repository.searchByKeyword(keyword);
+    }
+
+    /**
+     * 綜合關鍵字搜尋（搜尋名稱、描述、地址、標籤）
+     */
+    public List<SightResponse> searchSightsInAll(String keyword) {
+        return repository.searchByKeywordInAll(keyword).stream()
+                .map(SightConverter::toSightResponse)
+                .toList();
+    }
+
+    /**
+     * 多條件動態查詢（支援 city, zone, keyword 的 AND 交集）
+     * 例如：台北市 AND 信義區 AND 博物館
+     * 參數為 null 或空字串時會被忽略
+     */
+    public List<SightResponse> searchByMultipleConditions(String city, String zone, String keyword) {
+        // 將空字串轉為 null，讓 JPQL 的 IS NULL 判斷生效
+        String cityParam = (city != null && !city.trim().isEmpty()) ? city : null;
+        String zoneParam = (zone != null && !zone.trim().isEmpty()) ? zone : null;
+        String keywordParam = (keyword != null && !keyword.trim().isEmpty()) ? keyword : null;
+
+        return repository.searchByMultipleConditions(cityParam, zoneParam, keywordParam).stream()
+                .map(SightConverter::toSightResponse)
+                .toList();
     }
 
     /**

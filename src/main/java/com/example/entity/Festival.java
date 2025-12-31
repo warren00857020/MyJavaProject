@@ -31,8 +31,8 @@ public class Festival {
     @Column(name = "photo_url", length = 1024)
     private String photoUrl;
 
-    @Column(name = "photo_urls", columnDefinition = "TEXT[]")
-    private String[] photoUrls;
+    @Column(name = "photo_urls", columnDefinition = "TEXT")
+    private String photoUrls;  // 逗號分隔的照片 URL 字串
 
     /* ---------- 描述與地點 ---------- */
     @Column(columnDefinition = "TEXT")
@@ -67,7 +67,7 @@ public class Festival {
     @Column(name = "is_lunar")
     private Boolean isLunar = false;  // 是否為農曆
 
-    @Column(name = "event_schedule", columnDefinition = "JSONB")
+    @Column(name = "event_schedule", columnDefinition = "TEXT")
     private String eventSchedule;  // 活動時程（JSON 格式）
 
     /* ---------- 聯絡資訊 ---------- */
@@ -78,8 +78,8 @@ public class Festival {
     private String contactInfo;
 
     /* ---------- 標籤與參與資訊 ---------- */
-    @Column(columnDefinition = "TEXT[]")
-    private String[] tags;  // 標籤：UNESCO、國定、地方特色等
+    @Column(columnDefinition = "TEXT")
+    private String tags;  // 逗號分隔的標籤字串（UNESCO、國定、地方特色等）
 
     @Column(name = "expected_duration")
     private Integer expectedDuration;  // 預計參與時間（分鐘）
@@ -91,8 +91,14 @@ public class Festival {
     private String ticketInfo;  // 票務資訊
 
     /* ---------- 元資料 ---------- */
-    @Column(name = "source_url", length = 512)
-    private String sourceUrl;
+    @Column(name = "source_url", length = 512, unique = true)
+    private String sourceUrl;  // taiwan.net.tw 的原始 URL（用於去重）
+
+    @Column(name = "event_id", length = 50)
+    private String eventId;  // 活動編號（例：lid=081434）
+
+    @Column(name = "date_string", length = 100)
+    private String dateString;  // 原始日期字串（例：2025-11-14~2025-12-28）
 
     @Column(name = "is_verified")
     private Boolean isVerified = false;
@@ -140,8 +146,8 @@ public class Festival {
     public String getPhotoUrl() { return photoUrl; }
     public void setPhotoUrl(String photoUrl) { this.photoUrl = photoUrl; }
 
-    public String[] getPhotoUrls() { return photoUrls; }
-    public void setPhotoUrls(String[] photoUrls) { this.photoUrls = photoUrls; }
+    public String getPhotoUrls() { return photoUrls; }
+    public void setPhotoUrls(String photoUrls) { this.photoUrls = photoUrls; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
@@ -182,8 +188,8 @@ public class Festival {
     public String getContactInfo() { return contactInfo; }
     public void setContactInfo(String contactInfo) { this.contactInfo = contactInfo; }
 
-    public String[] getTags() { return tags; }
-    public void setTags(String[] tags) { this.tags = tags; }
+    public String getTags() { return tags; }
+    public void setTags(String tags) { this.tags = tags; }
 
     public Integer getExpectedDuration() { return expectedDuration; }
     public void setExpectedDuration(Integer expectedDuration) { this.expectedDuration = expectedDuration; }
@@ -196,6 +202,12 @@ public class Festival {
 
     public String getSourceUrl() { return sourceUrl; }
     public void setSourceUrl(String sourceUrl) { this.sourceUrl = sourceUrl; }
+
+    public String getEventId() { return eventId; }
+    public void setEventId(String eventId) { this.eventId = eventId; }
+
+    public String getDateString() { return dateString; }
+    public void setDateString(String dateString) { this.dateString = dateString; }
 
     public Boolean getIsVerified() { return isVerified; }
     public void setIsVerified(Boolean isVerified) { this.isVerified = isVerified; }

@@ -12,6 +12,9 @@ import java.util.Optional;
 @Repository
 public interface FoodRepository extends JpaRepository<Food, Long> {
 
+    // 根據 Google Place ID 查詢（用於去重和更新）
+    Food findByPlaceId(String placeId);
+
     // 根據美食名稱查詢
     Optional<Food> findByFoodName(String foodName);
 

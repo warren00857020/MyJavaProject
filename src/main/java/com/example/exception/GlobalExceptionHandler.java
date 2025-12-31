@@ -1,6 +1,9 @@
 package com.example.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.catalina.connector.ClientAbortException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -13,6 +16,18 @@ import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    /**
+     * 處理客戶端中斷異常（使用者關閉瀏覽器、網路中斷等）
+     * 這不是真正的錯誤，只記錄 debug 層級的日誌
+     */
+    @ExceptionHandler(ClientAbortException.class)
+    public void handleClientAbortException(ClientAbortException ex) {
+        logger.debug("客戶端中斷連線: {}", ex.getMessage());
+        // 不返回任何 Response，因為客戶端已經斷線
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(

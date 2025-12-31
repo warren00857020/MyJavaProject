@@ -51,27 +51,25 @@ public class CrawlerService {
 
             Long regionId = region.getId();
 
-            // 2. 將 regionCode 轉換為 TravelKing 的 county slug
-            String countySlug = cityMappingConfig.getCountySlug(regionCode);
-            if (countySlug == null) {
+            // 2. 將 regionCode 轉換為 TravelKing 的 city slug
+            // 例：TPE -> taipei-city, NWT -> new-taipei-city
+            String citySlug = cityMappingConfig.getCountySlug(regionCode);
+            if (citySlug == null) {
                 throw new RuntimeException("無法映射縣市代碼：" + regionCode);
             }
 
-            // 3. 獲取該縣市下的所有城市列表
-            List<String> cities = cityMappingConfig.getCities(countySlug);
-            if (cities.isEmpty()) {
-                throw new RuntimeException("找不到城市列表：" + countySlug);
-            }
+            // 3. 爬取該城市的所有景點
+            // TravelKing 的 URL 格式：/tourguide/taiwan/{city}
+            // 例：https://www.travelking.com.tw/tourguide/taiwan/taipei-city
+            List<Sight> sights = sightCrawler.crawlByCity(citySlug);
 
-            // 4. 爬取資料
-            List<Sight> sights = sightCrawler.crawlByCounty(countySlug, cities);
-
-            // 5. 設定 regionId（因為爬蟲無法直接知道）
+            // 4. 設定 regionId（因為爬蟲無法直接知道資料庫的 region_id）
             for (Sight sight : sights) {
                 sight.setRegionId(regionId);
             }
 
-            // 6. 批次儲存
+            // 5. 批次儲存（爬蟲已經在 crawlByCity 中逐筆儲存了，這裡可以略過）
+            // 但為了保險起見，還是執行一次批次儲存
             if (!sights.isEmpty()) {
                 sightCrawler.saveBatch(sights);
             }

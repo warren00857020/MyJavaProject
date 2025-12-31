@@ -32,8 +32,8 @@ public class Sight {
     @Column(name = "photo_url", length = 1024)
     private String photoURL;
 
-    @Column(name = "photo_urls", columnDefinition = "TEXT[]") //若報錯，可能是因為JPA不支援陣列型態
-    private String[] photoUrls;  // PostgreSQL 陣列
+    @Column(name = "photo_urls", columnDefinition = "TEXT")
+    private String photoUrls;  // 逗號分隔的照片 URL 字串
 
     /* ---------- 描述與地址 ---------- */
     @Column(columnDefinition = "TEXT")
@@ -50,21 +50,21 @@ public class Sight {
     private BigDecimal longitude;
 
     /* ---------- 營業與票價資訊 ---------- */
-    @Column(name = "opening_hours", columnDefinition = "JSONB")
+    @Column(name = "opening_hours", columnDefinition = "TEXT")
     private String openingHours;  // JSON 字串格式
 
-    @Column(name = "ticket_price", length = 100)
+    @Column(name = "ticket_price", columnDefinition = "TEXT")
     private String ticketPrice;
 
     @Column(name = "official_website", length = 512)
     private String officialWebsite;
 
-    @Column(length = 50)
+    @Column(columnDefinition = "TEXT")
     private String phone;
 
     /* ---------- 標籤與推薦 ---------- */
-    @Column(columnDefinition = "TEXT[]") //若報錯，可能是因為JPA不支援陣列型態
-    private String[] tags;  // PostgreSQL 陣列
+    @Column(columnDefinition = "TEXT")
+    private String tags;  // 逗號分隔的標籤字串
 
     @Column(name = "recommended_duration")
     private Integer recommendedDuration;  // 建議停留時間（分鐘）
@@ -119,8 +119,8 @@ public class Sight {
     public String getPhotoURL() { return photoURL; }
     public void setPhotoURL(String photoURL) { this.photoURL = photoURL; }
 
-    public String[] getPhotoUrls() { return photoUrls; }
-    public void setPhotoUrls(String[] photoUrls) { this.photoUrls = photoUrls; }
+    public String getPhotoUrls() { return photoUrls; }
+    public void setPhotoUrls(String photoUrls) { this.photoUrls = photoUrls; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
@@ -146,8 +146,8 @@ public class Sight {
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
 
-    public String[] getTags() { return tags; }
-    public void setTags(String[] tags) { this.tags = tags; }
+    public String getTags() { return tags; }
+    public void setTags(String tags) { this.tags = tags; }
 
     public Integer getRecommendedDuration() { return recommendedDuration; }
     public void setRecommendedDuration(Integer recommendedDuration) { this.recommendedDuration = recommendedDuration; }

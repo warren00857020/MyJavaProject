@@ -121,42 +121,9 @@ class SightControllerTest {
         verify(sightService, times(1)).getSight("和平島公園");
     }
 
-    @Test
-    @DisplayName("GET /sights?keyword=中正區 - 查詢區域景點成功")
-    void getSights_WithKeyword() throws Exception {
-        // Given
-        SightResponse response2 = new SightResponse();
-        response2.setSightName("海洋廣場");
-        response2.setZone("中正區");
-        response2.setCategory("廣場");
+    
 
-        List<SightResponse> responses = Arrays.asList(testResponse, response2);
-        when(sightService.getSightsByZone(any())).thenReturn(responses);
-
-        // When & Then
-        mockMvc.perform(get("/sights")
-                .param("keyword", "中正區"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].sightName").value("和平島公園"))
-                .andExpect(jsonPath("$[1].sightName").value("海洋廣場"));
-
-        verify(sightService, times(1)).getSightsByZone(any());
-    }
-
-    @Test
-    @DisplayName("GET /sights - 無 keyword 參數")
-    void getSights_NoKeyword() throws Exception {
-        // Given
-        when(sightService.getSightsByZone(any())).thenReturn(List.of());
-
-        // When & Then
-        mockMvc.perform(get("/sights"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(0));
-
-        verify(sightService, times(1)).getSightsByZone(any());
-    }
+    
 
     @Test
     @DisplayName("DELETE /sights/{sightName} - 刪除景點成功")

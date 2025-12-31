@@ -10,7 +10,9 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: mydb
     volumes:
-      - pg-data:/var/lib/postgresql/data
+      - pg-data:/var/lib/postgresql/data  # Docker 管理的 Volume（推薦）
+      # 或使用下面這行改為本地資料夾（方便備份）：
+      # - ./data/postgres:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s

@@ -96,13 +96,13 @@ Taiwan.net.tw
 5. ✅ API 文件（Swagger）
 
 ### Phase 4: MCP Server（2-3 週）⭐ 核心亮點
-1. ✅ MCP 協議基礎實作
+1. ✅ MCP 協議基礎實作（TypeScript）
 2. ✅ Tool Registry 系統
-3. ✅ 實作基礎 Tools（search_sights, search_foods）
-4. ✅ 實作進階 Tools（plan_itinerary）
-5. ✅ Resource Provider
-6. ✅ Prompt Templates
-7. ✅ SSE 端點
+3. ✅ 實作基礎 Tools（search_sights, search_foods, search_festivals）
+4. ✅ 實作詳細資訊 Tools（get_sight_details, get_food_details）
+5. ✅ 設定 Claude Code 整合
+6. ⏳ 設定 Claude Desktop 整合（選用）
+7. ⏳ 實作進階 Tools（plan_itinerary）- 未來擴展
 
 ### Phase 5: 行程規劃演算法（1-2 週）
 1. ✅ 評分系統
@@ -135,6 +135,7 @@ Taiwan.net.tw
 - 預估 2000+ 景點
 - 1000+ 美食據點
 - 100+ 節慶活動
+### Places API Key = AIzaSyCJTzMWkfxhnUx3haP0qjULGbTVAm5GDuQ
 
 ### 4. 彈性的資料模型
 - JSONB 欄位儲存非結構化資料

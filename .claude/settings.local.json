@@ -4,7 +4,34 @@
       "Bash(rm:*)",
       "Bash(cat:*)",
       "Bash(mvn clean compile:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(.mvnw clean:*)",
+      "Bash(./mvnw.cmd clean:*)",
+      "Bash(docker run:*)",
+      "Bash(docker rm:*)",
+      "Bash(docker exec:*)",
+      "Bash(javac:*)",
+      "Bash(java:*)",
+      "Bash(mvnw.cmd clean compile:*)",
+      "Bash(.mvnw spring-boot:run)",
+      "Bash(timeout /t 20 /nobreak)",
+      "Bash(curl:*)",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 20; curl.exe -X POST ''http://localhost:8080/foods/crawl-by-text?query=台北市信義區%20餐廳&maxResults=5''\")",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(timeout 2 node:*)",
+      "Bash(.mvnw.cmd clean compile:*)",
+      "Bash(powershell -Command \"\\(Invoke-RestMethod -Uri ''http://localhost:8080/sights''\\).Count\")",
+      "Bash(powershell -Command \"\\(Invoke-RestMethod -Uri ''http://localhost:8080/foods''\\).Count\")",
+      "Bash(powershell -Command \"\\(Invoke-RestMethod -Uri ''http://localhost:8080/festivals''\\).Count\")",
+      "Bash(powershell -Command \"docker exec postgres psql -U myuser -d mydb -c \"\"\\\\d sights\"\" 2>&1 | Select-String -Pattern ''character varying''\")",
+      "Bash(docker ps:*)",
+      "Bash(echo \"# 資料庫設定（本地開發環境）\nDB_URL=jdbc:postgresql://localhost:5432/mydb\nDB_USERNAME=postgres\nDB_PASSWORD=postgres\n\n# Google Places API\nGOOGLE_PLACES_API_KEY=AIzaSyCJTzMWkfxhnUx3haP0qjULGbTVAm5GDuQ\")"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "taiwan-travel"
+  ]
 }

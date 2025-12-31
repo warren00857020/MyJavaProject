@@ -32,6 +32,27 @@ build/
 ### VS Code ###
 .vscode/
 
-### Local CI/CD ###
+### Environment Variables ###
+.env
 .env.local
+.env.production
 .secrets
+
+### Logs ###
+logs/
+*.log
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Claude ###
+.claude/
+
+### MCP Server ###
+mcp-server/node_modules/
+mcp-server/dist/
+mcp-server/.env
+
+### Done tracking ###
+src/main/resources/done.txt

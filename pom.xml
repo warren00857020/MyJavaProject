@@ -35,6 +35,13 @@
 			<version>1.18.1</version>
 		</dependency>
 
+		<!-- JSON 處理 -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20231013</version>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

@@ -1,0 +1,5 @@
+com\example\exception\GlobalExceptionHandlerTest.class
+com\example\controller\SightControllerTest.class
+com\example\myJavaProject\MyJavaProjectApplicationTests.class
+com\example\service\SightServiceTest.class
+com\example\converter\SightConverterTest.class

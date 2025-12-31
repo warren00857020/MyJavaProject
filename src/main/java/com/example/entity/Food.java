@@ -15,6 +15,28 @@ public class Food {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /* ---------- Google Places API 欄位 ---------- */
+    @Column(name = "place_id", unique = true, length = 255)
+    private String placeId;  // Google Place ID（唯一識別碼，用於更新與去重）
+
+    @Column(name = "rating")
+    private Double rating;  // Google 評分 (0.0-5.0)
+
+    @Column(name = "user_ratings_total")
+    private Integer userRatingsTotal;  // Google 評價數量
+
+    @Column(name = "price_level")
+    private Integer priceLevel;  // Google 價格等級 (0-4: 0=免費, 1=$, 2=$$, 3=$$$, 4=$$$$)
+
+    @Column(name = "business_status", length = 50)
+    private String businessStatus;  // 營業狀態：OPERATIONAL, CLOSED_TEMPORARILY, CLOSED_PERMANENTLY
+
+    @Column(name = "google_types", columnDefinition = "TEXT[]")
+    private String[] googleTypes;  // Google 類型陣列 ["restaurant", "food", "point_of_interest"]
+
+    @Column(name = "photo_references", columnDefinition = "TEXT[]")
+    private String[] photoReferences;  // Google Photos 參考 ID 陣列（用於後續取得實際圖片）
+
     /* ---------- 基本欄位 ---------- */
     @Column(name = "food_name", nullable = false, length = 255)
     private String foodName;  // 美食/餐廳名稱
@@ -53,8 +75,8 @@ public class Food {
     private BigDecimal longitude;
 
     /* ---------- 營業與價格資訊 ---------- */
-    @Column(name = "opening_hours", columnDefinition = "JSONB")
-    private String openingHours;  // JSON 字串格式
+    @Column(name = "opening_hours", columnDefinition = "TEXT")
+    private String openingHours;  // JSON 字串格式（儲存為 TEXT）
 
     @Column(name = "price_range", length = 50)
     private String priceRange;  // 價格範圍：$, $$, $$$
@@ -110,6 +132,29 @@ public class Food {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
+    // Google Places API 欄位
+    public String getPlaceId() { return placeId; }
+    public void setPlaceId(String placeId) { this.placeId = placeId; }
+
+    public Double getRating() { return rating; }
+    public void setRating(Double rating) { this.rating = rating; }
+
+    public Integer getUserRatingsTotal() { return userRatingsTotal; }
+    public void setUserRatingsTotal(Integer userRatingsTotal) { this.userRatingsTotal = userRatingsTotal; }
+
+    public Integer getPriceLevel() { return priceLevel; }
+    public void setPriceLevel(Integer priceLevel) { this.priceLevel = priceLevel; }
+
+    public String getBusinessStatus() { return businessStatus; }
+    public void setBusinessStatus(String businessStatus) { this.businessStatus = businessStatus; }
+
+    public String[] getGoogleTypes() { return googleTypes; }
+    public void setGoogleTypes(String[] googleTypes) { this.googleTypes = googleTypes; }
+
+    public String[] getPhotoReferences() { return photoReferences; }
+    public void setPhotoReferences(String[] photoReferences) { this.photoReferences = photoReferences; }
+
+    // 基本欄位
     public String getFoodName() { return foodName; }
     public void setFoodName(String foodName) { this.foodName = foodName; }
 
