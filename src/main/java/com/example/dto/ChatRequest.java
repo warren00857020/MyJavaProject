@@ -1,6 +1,7 @@
 package com.example.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /**
@@ -10,8 +11,13 @@ import java.util.List;
 public class ChatRequest {
 
     private String model = "claude-3-5-sonnet-20241022";
+
+    @JsonProperty("max_tokens")
     private Integer maxTokens = 4096;
+
     private List<Message> messages;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Tool> tools;
 
     public static class Message {
