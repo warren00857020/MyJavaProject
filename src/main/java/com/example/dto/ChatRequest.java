@@ -1,10 +1,12 @@
 package com.example.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 
 /**
  * Claude API 聊天請求 DTO
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatRequest {
 
     private String model = "claude-3-5-sonnet-20241022";
