@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taiwan Travel AI Assistant - 台灣旅遊智能助手</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🗺️ Taiwan Travel AI</h1>
+            <p class="subtitle">台灣旅遊智能助手 - 讓 AI 幫你規劃完美旅程</p>
+        </header>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div class="messages" id="messages">
+                <!-- Welcome Message -->
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <strong>AI 助手</strong>
+                        <p>你好！我是台灣旅遊智能助手 👋</p>
+                        <p>我可以幫你：</p>
+                        <ul>
+                            <li>🏞️ 推薦台灣各地景點</li>
+                            <li>🍜 尋找在地美食</li>
+                            <li>📅 規劃旅遊行程</li>
+                            <li>🎯 提供旅遊建議</li>
+                        </ul>
+                        <p>試試問我：「推薦台北的景點」或「台中有什麼好吃的？」</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <textarea
+                        id="userInput"
+                        placeholder="輸入你的問題..."
+                        rows="1"
+                    ></textarea>
+                    <button id="sendButton" class="send-button">
+                        <span>發送</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="status" id="status">
+                    <span class="api-url" id="apiUrl">API: 載入中...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings (簡單的配置) -->
+        <div class="settings">
+            <button id="settingsButton" class="settings-button">⚙️</button>
+            <div id="settingsPanel" class="settings-panel hidden">
+                <h3>設定</h3>
+                <div class="form-group">
+                    <label for="apiEndpoint">API 端點：</label>
+                    <input
+                        type="text"
+                        id="apiEndpoint"
+                        value="http://localhost:8080/api/chat"
+                        placeholder="http://localhost:8080/api/chat"
+                    >
+                    <small>本地測試：http://localhost:8080/api/chat</small>
+                    <small>Railway：https://your-app.railway.app/api/chat</small>
+                </div>
+                <button id="saveSettings" class="save-button">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
