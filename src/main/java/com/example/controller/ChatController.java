@@ -88,7 +88,14 @@ public class ChatController {
         } catch (Exception e) {
             response.put("success", false);
             response.put("error", "聊天失敗: " + e.getMessage());
+            response.put("errorType", e.getClass().getSimpleName());
+
+            // 詳細的錯誤日誌
+            System.err.println("❌ Chat API 錯誤:");
+            System.err.println("   訊息: " + request.getMessage());
+            System.err.println("   錯誤: " + e.getMessage());
             e.printStackTrace();
+
             return ResponseEntity.status(500).body(response);
         }
     }
