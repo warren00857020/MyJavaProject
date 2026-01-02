@@ -76,6 +76,13 @@
 			<artifactId>postgres-socket-factory</artifactId>
 			<version>1.17.0</version>
 		</dependency>
+
+		<!-- dotenv-java: 讀取 .env 檔案 -->
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
