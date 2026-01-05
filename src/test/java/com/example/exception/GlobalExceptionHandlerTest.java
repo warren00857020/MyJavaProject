@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.service.SightService;
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @DisplayName("GlobalExceptionHandler 整合測試")
 class GlobalExceptionHandlerTest {
 
@@ -27,6 +29,22 @@ class GlobalExceptionHandlerTest {
 
     @MockBean
     private SightService sightService;
+
+    // Mock crawler dependencies to avoid loading them
+    @MockBean
+    private com.example.crawler.config.SightUrlsConfig sightUrlsConfig;
+
+    @MockBean
+    private com.example.crawler.TravelKingSightCrawler travelKingSightCrawler;
+
+    @MockBean
+    private com.example.crawler.TdxScenicSpotCrawler tdxCrawler;
+
+    @MockBean
+    private com.example.crawler.CrawlerService crawlerService;
+
+    @MockBean
+    private com.example.service.ClaudeService claudeService;
 
     @Test
     @DisplayName("處理 NotFoundException - 返回 404")
